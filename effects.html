@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--
+  PUZZLE PLATFORM
+    by Andrew Ward (anjayward@gmail.com)
+    (c) All rights reserved
+    You may not modify, redistribute, sell,
+    license this product in anyway.
+
+    Copyrights to scripts and resources
+    in assets/libraries are owned by other people
+-->
+<head>
+	<title>Puzzle Platform</title>
+	<link rel="stylesheet" type="text/css" href="assets/style.css">
+
+	<!-- Libraries -->
+	<script type="application/javascript" src="assets/libraries/jQuery.min.js"></script>
+	<script type="application/javascript" src="assets/libraries/crafty.js"></script>
+
+	<script type="application/javascript" src="assets/effects.js"></script>
+	
+	
+</head>
+<body>
+	<script type="application/javascript">
+		Crafty.init();
+		Crafty.viewport.init();
+	
+		Crafty.c("drawmode",{
+			init: function(){
+				this.requires("2D, DOM");
+				console.log("Registering entity...");
+			}
+		});	
+		
+		/*Crafty.e("ParticleSystem")
+			.particles({
+				delay: 25,
+				decay: {
+					t: 500,
+					fo: 1200
+				},
+				color: ["grey","darkgrey"],
+				spawn: {
+					pos: {
+						type: "range",
+						from: [-50,0],
+						to: [50,0]
+					},
+					velocity: {x:0,y:-100},
+					acc: {x:0,y:0},
+					amt: 3
+				}
+			})
+			.attr({
+				x:Crafty.viewport.width/2-100,
+				y:Crafty.viewport.height/2-20,
+				w:10,
+				h:10,
+				z:1001
+			});
+			
+		Crafty.e("ParticleSystem")
+			.particles({
+				delay: 10,
+				decay: {
+					t: 200,
+					fo: 200
+				},
+				color: ["red","orange"],
+				spawn: {
+					pos: {
+						type: "range",
+						from: [-50,0],
+						to: [50,0]
+					},
+					velocity: {x:0,y:-100},
+					acc: {x:0,y:0},
+					amt: 5
+				}
+			})
+			.attr({
+				x:Crafty.viewport.width/2-100,
+				y:Crafty.viewport.height/2,
+				w:10,
+				h:10,
+				z:1002
+			});*/
+			
+		/*Crafty.e("ParticleSystem, 2D, DOM, Color")
+			.particles({
+				delay: 100,
+				decay: {
+					t: 2000,
+					fo: 200
+				},
+				color: ["red","blue","green","purple"],
+				spawn: {
+					pos: {
+						type: "range",
+						from: [-10,0],
+						to: [10,0]
+					},
+					angle: {
+						type: "range",
+						from: 0,
+						to: 10				
+					},
+					velocity: 300,
+					acc: {x:0,y:9.81},
+					amt: 5
+				}
+			})
+			.color("black")
+			.attr({
+				x:Crafty.viewport.width/2,
+				y:Crafty.viewport.height/2,
+				w:10,
+				h:10,
+				z:1002
+			});*/
+			
+		var win = $(window)[0];
+		var ms;
+		win.addEventListener('mousemove', function(e) {
+			ms = {
+			  x: e.clientX-5,
+			  y: e.clientY-5
+			};
+		});
+		var md = false;
+		win.addEventListener('mousedown', function(e){
+			md = true;
+		}, false);
+		win.addEventListener('mouseup', function(e){
+			md = false;
+		}, false);
+		setInterval(function(){
+			if (!md)
+				return;
+			Crafty.e("ParticleSystem")
+			.particles({
+				delay: 5,
+				expire: 100,
+				decay: {
+					t: 2000,
+					fo: 200
+				},
+				color: ["red","blue","green","purple"],
+				spawn: {
+					pos: {
+						type: "range",
+						from: [-10,0],
+						to: [10,0]
+					},
+					angle: {
+						type: "range",
+						from: 0,
+						to: 8				
+					},
+					velocity: 300,
+					acc: {x:0,y:0},
+					amt: 5
+				}
+			})	.attr({
+				x:Crafty.viewport.width/2,
+				y:Crafty.viewport.height/2,
+				w:10,
+				h:10,
+				z:1002
+			})
+			.attr(ms);
+		},1000/10);
+	</script>
+</body>

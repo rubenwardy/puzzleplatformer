@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--
+  PUZZLE PLATFORM
+    by Andrew Ward (anjayward@gmail.com)
+    (c) All rights reserved
+    You may not modify, redistribute, sell,
+    license this product in anyway.
+
+    Copyrights to scripts and resources
+    in assets/libraries are owned by other people
+-->
+<head>
+	<title>Puzzle Platform</title>
+	<link rel="stylesheet" type="text/css" href="assets/style.css">
+
+	<!-- Libraries -->
+	<script type="application/javascript" src="assets/libraries/jQuery.min.js"></script>
+	<script type="application/javascript" src="assets/libraries/crafty.js"></script>
+	<script type="application/javascript" src="assets/libraries/Box2d.js"></script>
+
+	<script type="application/javascript" src="assets/Box2d.js"></script>
+	<script type="application/javascript" src="assets/map.js"></script>
+	<script type="application/javascript" src="assets/effects.js"></script>
+	<script type="application/javascript" src="assets/engine.js"></script>
+	<script type="application/javascript" src="assets/game.js"></script>
+	<script type="application/javascript" src="assets/player.js"></script>
+	
+	<!-- mods -->
+	<script type="application/javascript" src="assets/content.js"></script>
+</head>
+<body>
+	<script type="application/javascript">
+		Crafty.init();
+		Crafty.viewport.init();
+		Crafty.box2D.init(0,9.81,64,true);
+		//Crafty.box2D.showDebugInfo();
+		Crafty.scene("Load");
+	</script>
+	<div id="panel">
+		<div id="fps">Loading Engine...</div>
+	</div>
+	<div id="flash"></div>-->
+</body>
