@@ -53,6 +53,7 @@ Crafty.c("Player",{
 			return;
 		}
 		console.log("Player has died!");
+		Crafty.trigger("PlayerDeath", null);
   		this.head.visible = false;
 		this.pbody.visible = false;
 		this.deadbody.visible = true;
@@ -274,11 +275,11 @@ Crafty.c("PickUp",{
 		if ( this.count > 2 ){
 			this.count = 0;			
 			var now_pos = {x: game.player.x, y: game.player.y, w: 27, h: 29};
-			if ( !this.last_pos ){
+			if (!this.last_pos){
 				this.last_pos = now_pos;
 				return;
 			}
-			if ( map.raycast_player(this.last_pos, now_pos, {x: this.x+10, y: this.y+10, w: 62, h: 62}, 2) ){
+			if ( map.raycast_player(this.last_pos, now_pos, {x: this.x+20, y: this.y+30, w: 30, h: 40}, 2) ){
 				this.destroy();
 				if ( game.inventory[this.type] )
 					game.inventory[this.type]+=this.amount;
@@ -290,8 +291,8 @@ Crafty.c("PickUp",{
 				if (this.tile_data.onPickUp){
 					this.tile_data.onPickUp(this);
 				}
-			}
-			
+			}			
+			this.last_pos = now_pos;			
 		}
 	}
 });

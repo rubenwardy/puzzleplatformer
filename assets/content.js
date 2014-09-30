@@ -47,20 +47,18 @@ Crafty.c("pull", {
 		
 		// Add as fixture
 		this.fixture = game.player.addFixture({
-			density: 0,
+			density: 0.1,
 			shape: [ [deltax+10,deltay+10], [deltax+72,deltay+10], [deltax+72,deltay+72], [deltax+10,deltay+72] ]
 		});
+		game.player.attach(this);
 		this.bind("EnterFrame", this.move_to_fix);
 		this.bind("KeyDown", this.keydown);
+		Crafty.bind("PlayerDeath", this.end_use);
 		
 	},
 	move_to_fix: function() {
 		this.can_detach = true;
-		var to = {x: game.player.x + this.delta.x, y: game.player.y + this.delta.y};
-		if (to.x != this.x || to.y != this.y) {
-			this.attr({x: to.x, y: to.y});
-			this.trigger("move", to);
-		}
+		this.trigger("move", {x: this.x, y: this.y});
 	},
 	keydown: function(e) {
 		if (e.key == Crafty.keys.E && this.can_detach) {
@@ -68,11 +66,14 @@ Crafty.c("pull", {
 		}
 	},
 	end_use: function(to) {
-		if (this.using && this != to) {
+		console.log("calling end use...");
+		if (this.using && (to == null || this != to)) {
 			console.log("End use");
 			Crafty.unbind("using", this.end_use);
 			this.unbind("EnterFrame", this.move_to_fix);
 			this.unbind("KeyDown", this.keydown);
+			Crafty.unbind("PlayerDeath", this.end_use);
+			game.player.detach(this);
 			Crafty.box2D.world.DestroyBody(game.player.body);
 			game.player.physics();
 			//game.player.body.DestroyFixture(this.fixture);
@@ -424,6 +425,7 @@ define.block({
 		shape:[[10,40],[72,40],[72,72],[10,72]],
 		isSensor: true
 	},
+	crushes: true,
 	ascii: 'w',
 	c: "DeathHazzard",
 });
@@ -528,23 +530,43 @@ define.block({
 });
 
 // Maps
-define.map({
+/*define.map({
 	spawn:{
-		x: 5,
-		y: 5
+		x: 3,
+		y: 2
 	},
-	width: 13,
-	height: 8,
+	width: 29,
+	height: 12,
 	cakes: 1,
 	map: [
-		["blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank"],
-		["blank","blank", {node:"vbuttonl",method:"toggle",action:[{x:4,y:4},{x:4,y:5}]},"","","","","","","","","ladder","blank"],
-		["blank","push","","","","","","","","","","ladder","blank"],
-		["blank","blank","blank","blank","blank","blank","blank","blank","blank","","","ladder","blank"],
-		["blank","","","tech","tech","","","","","","","ladder","blank"],
-		["blank","cake","","tech","tech","","","",{node:"button",method:"downtoggle",action:[{x:3,y:4},{x:3,y:5}]},"","","ladder","blank"],
-		["blank","blank","blank","blank","blank","blank","blank","spikes","blank","blank","blank","blank","blank"],
-		["blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank"]
+		["", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["", "", "blank", "", "", "", "", "", "", "", "tech", "", "", "", "", "blank"],
+		["", "", "blank", "", "", "", "", "", "", "", "tech", "", "", "cake", "", "blank"],
+		["blank", "blank", "blank", "blank", "blank", "blank", {node:"tech", visible:false}, {node:"tech", visible:false}, {node:"tech", visible:false}, "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["blank", "ladder", "", "", "", "tech", "", "", "", "", "", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "", "", "", "tech", "", "", "", "", "", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "", "", "", "", "", "", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "", "", "", "", "", "", "", "blank", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "", "", "", "", "button", "", "", "box", "blank", "ladder", "", "", {node:"button",method:"downtoggle",action:[{x:5,y:4},{x:5,y:5}, {x:6, y:3}, {x:7, y:3}, {x:8, y:3}]}, "", "", "", "", "", "", "", "", "flag", "", "box", "", "box", "blank"],
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "water", "water", "water", "blank", "water", "water", "water", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
+	]
+});*/
+
+define.map({
+	spawn:{
+		x: 1,
+		y: 2
+	},
+	width: 3,
+	height: 4,
+	cakes:1,
+	map: [
+		["blank","blank","blank"],
+		["blank","cake","blank"],
+		["blank","","blank"],
+		["blank","blank","blank"]
 	]
 });
 
@@ -563,7 +585,7 @@ define.map({
 		["blank", "blank", "blank", "blank", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "", "", "", "", "blank"],
 		["", "", "", "blank", "ladder", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "", "", "", "", "blank"],
 		["", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "cake", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "ladder", "", "", "flag", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
 		["", "", "", "blank", "", "", "blank", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
 		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "blank"],
 		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
@@ -575,17 +597,21 @@ define.map({
 
 define.map({
 	spawn:{
-		x: 1,
-		y: 2
+		x: 5,
+		y: 5
 	},
-	width: 5,
-	height: 4,
-	cakes: 5,
+	width: 13,
+	height: 8,
+	cakes: 1,
 	map: [
-		["blank", "blank", "blank", "blank"],
-		["blank", "cake", "cake", "blank"],
-		["blank", "cake", "cake", "blank", "cake"],
-		["blank", "blank", "blank", "blank"]
+		["blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank"],
+		["blank","blank", {node:"vbuttonl",method:"toggle",action:[{x:4,y:4},{x:4,y:5}]},"","","","","","","","","ladder","blank"],
+		["blank","push","","","","","","","","","","ladder","blank"],
+		["blank","blank","blank","blank","blank","blank","blank","blank","blank","","","ladder","blank"],
+		["blank","","","tech","tech","","","","","","","ladder","blank"],
+		["blank","cake","","tech","tech","","","",{node:"button",method:"downtoggle",action:[{x:3,y:4},{x:3,y:5}]},"","","ladder","blank"],
+		["blank","blank","blank","blank","blank","blank","blank","spikes","blank","blank","blank","blank","blank"],
+		["blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank"]
 	]
 });
 
@@ -609,6 +635,32 @@ define.map({
 		["", "", "blank", "blank", "blank", "blank", "blank", "water", "bounce", "blank", "blank", "blank", "blank"]
 	]
 });
+
+define.map({
+	spawn:{
+		x: 27,
+		y: 5
+	},
+	width: 29,
+	height: 13,
+	cakes: 2,
+	map: [
+		["blank", "blank", "blank", "blank", "drop", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+		["blank", "cake", "", "", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+		["blank", "", "", "", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["blank", "blank", "blank", "blank", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "", "", "", "", "blank"],
+		["", "", "", "blank", "ladder", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "", "", "", "", "blank"],
+		["", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "cake", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "ladder", "", "", "flag", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "", "", "blank", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "blank"],
+		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "spikes", "spikes","blank",  "", "blank", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "blank"],
+		["", "", "", "blank", "blank", "blank", "blank", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
+	]
+});
+
 define.map({
 	spawn:{
 		x: 1,
@@ -644,22 +696,6 @@ define.map({
 define.map({
 	spawn:{
 		x: 1,
-		y: 2
-	},
-	width: 3,
-	height: 4,
-	cakes:1,
-	map: [
-		["blank","blank","blank"],
-		["blank","cake","blank"],
-		["blank","","blank"],
-		["blank","blank","blank"]
-	]
-});
-
-define.map({
-	spawn:{
-		x: 1,
 		y: 3
 	},
 	width: 21,
@@ -678,3 +714,4 @@ define.map({
 		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
 });
+

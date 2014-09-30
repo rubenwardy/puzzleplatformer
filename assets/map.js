@@ -212,12 +212,17 @@ Crafty.c("Tile",{
 			this.attr({z: Math.floor((this.x+10)/64 + (this.mapheight-(this.y+10)/65) * this.mapwidth)}); 
 		});
 
-		// Init physics
-		if (this.init_physics)
-			this.init_physics();
-
 		// Do draw type
 		this.addComponent("Tile"+this.tile_data.drawtype);
+		
+		
+		// Init physics
+		if (this.tile_meta && this.tile_meta.visible == false) {
+			this.hide();
+		} else {
+			if (this.init_physics)
+				this.init_physics();
+		}
 
 		// Run function, if needed
 		if ((game.player && this.tile_data.init) || this.tile_data.init_req)
