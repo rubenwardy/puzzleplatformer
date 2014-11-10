@@ -15,6 +15,11 @@ Crafty.scene("menu", function() {
 	Crafty.e("2D, DOM, Image")
 		.attr({x: Crafty.viewport.width - 190, y: Crafty.viewport.height - 115})
 		.image("assets/sprites/pp_right.png");
+	Crafty.e("2D, DOM, Text, logo")
+		.attr({x: 0, y: 20, w: Crafty.viewport.width})
+		.textFont({ family: 'Arial',  size: '40px'})
+		.css("text-align", "center")
+		.text("Puzzle Platformer");
 
 	$("#fps").hide();
 	var d = "<ul id=\"menu\">\n";

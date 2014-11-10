@@ -66,7 +66,6 @@ div{
 }
 
 #menu {
-	background: rgba(255, 255, 255, 0.6);
 	display: table;
 	position: fixed;
 	bottom: 35px;
@@ -82,31 +81,23 @@ div{
 	display: table-cell;
 	width: 25%;
 	text-align: center;
+	padding: 0 10px 0 0;
 }
 
 #menu li a {
+	background: rgba(255, 255, 255, 0.6);
 	display: block;
 	padding: 5px 15px 5px 15px;
 	text-decoration: none;
-	border-right: 1px solid rgba(0, 0, 255, 0.2);
 	width: auto;
 	color: black;
 	cursor: pointer;
 	font-size: 150%;
-}
-
-#menu li:nth-child(1) a {
-	border-radius: 5px 0 0 5px;
-}
-
-#menu li:nth-last-child(1) a {
-	border-radius: 0 5px 5px 0;
-	border-right: none;
+	border-radius: 5px;
 }
 
 #menu li a:hover {
 	text-decoration: underline;
-	background: #cccccc;
 	background: rgba(255, 255, 255, 0.75);
 }
 
@@ -124,6 +115,16 @@ div{
 	color: white;
 	z-index: 10000;
 	text-align: center;
+}
+
+#help {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	z-index: 2000;
+	background: rgba(255, 255, 255, 0.6);
+	padding: 1em;
+	border-radius: 5px;
 }
 
 
