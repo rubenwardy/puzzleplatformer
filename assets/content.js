@@ -32,7 +32,7 @@ Crafty.c("pull", {
 		this.can_detach = false;
 		setTimeout(function() { this.can_detach = true; }, 5);
 		console.log("Use");
-		Crafty.bind("using", this.end_use);
+		Crafty.bind("using", function(to) { this_item.end_use(this_item, to) });
 		this.using = true;
 		game.player.lock_turn = game.player.lock_turn + 1;
 
@@ -63,7 +63,7 @@ Crafty.c("pull", {
 	},
 	keydown: function(e) {
 		if (e.key == Crafty.keys.E && this.can_detach) {
-			this.end_use();
+			this.end_use(this, null);
 		}
 	},
 	end_use: function(this_item, to) {
@@ -527,88 +527,60 @@ define.block({
 	ascii: '$'
 });
 
-// Maps
+/*********************************
+ *             LEVELS            *
+ *********************************/
+
+// Level: Tutorial, get cake
 define.map({
 	spawn:{
 		x: 1,
 		y: 2
 	},
-	width: 12,
-	height: 4,
-	cakes: 1,
-	map: [
-		["", "", "", ""],
-		["", "", "", "", ""],
-		["", "", "", "", "", "", "", "", "", "", "", "cake"],
-		["blank", "blank", "blank", "blank", "", "", "", "", "", "", "blank", "blank", "blank"]
-	]
-});
-
-define.map({
-	spawn:{
-		x: 3,
-		y: 2
-	},
-	width: 29,
-	height: 12,
-	cakes: 1,
-	map: [
-		["", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["", "", "blank", "", "", "", "", "", "", "", "tech", "", "", "", "", "blank"],
-		["", "", "blank", "", "", "", "", "", "", "", "tech", "", "", "cake", "", "blank"],
-		["blank", "blank", "blank", "blank", "blank", "blank", {node:"tech", visible:false}, {node:"tech", visible:false}, {node:"tech", visible:false}, "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["blank", "ladder", "", "", "", "tech", "", "", "", "", "", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "ladder", "", "", "", "tech", "", "", "", "", "", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "ladder", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "ladder", "", "", "", "", "", "", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "ladder", "", "", "", "", "", "", "", "blank", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "ladder", "", "", "", "", "button", "", "", "box", "blank", "ladder", "", "", {node:"button",method:"downtoggle",action:[{x:5,y:4},{x:5,y:5}, {x:6, y:3}, {x:7, y:3}, {x:8, y:3}]}, "", "", "", "", "", "", "", "", "flag", "", "box", "", "box", "blank"],
-		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "water", "water", "water", "blank", "water", "water", "water", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
-	]
-});
-
-define.map({
-	spawn:{
-		x: 1,
-		y: 2
-	},
-	width: 3,
+	help: [
+		{
+			msg: "Welcome traveller!<br /><br />Collect the cakes to proceed to the next level.",
+			at: {x: -3, y: 1, w: 120},
+			behind: true
+		}
+	],
+	width: 4,
 	height: 4,
 	cakes:1,
 	map: [
-		["blank","blank","blank"],
-		["blank","cake","blank"],
-		["blank","","blank"],
-		["blank","blank","blank"]
+		["blank","blank","blank","blank"],
+		["blank","cake","","blank"],
+		["blank","","sign_jump","blank"],
+		["blank","blank","blank","blank"]
 	]
 });
 
+// Level: Tutorial, water bounce
 define.map({
 	spawn:{
-		x: 27,
-		y: 5
+		x: 1,
+		y: 2
 	},
-	width: 29,
-	height: 13,
-	cakes: 2,
+	width: 26,
+	help: [
+		{
+			msg: "Don't fall into<br />the water!",
+			at: {x: -3, y: 1, w: 120},
+			behind: true
+		}
+	],
+	height: 5,
+	cakes: 1,
 	map: [
-		["blank", "blank", "blank", "blank", "drop", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-		["blank", "cake", "", "", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-		["blank", "", "", "", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["blank", "blank", "blank", "blank", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "", "", "", "", "blank"],
-		["", "", "", "blank", "ladder", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "", "", "", "", "blank"],
-		["", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "cake", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "ladder", "", "", "flag", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "", "", "blank", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "blank"],
-		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "spikes", "spikes","blank",  "", "blank", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "blank"],
-		["", "", "", "blank", "blank", "blank", "blank", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "cake", "blank"],
+		["blank", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water", "water", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water", "blank", "blank", "blank", "blank"],
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
 });
 
+// Level: Box and Buttons 1
 define.map({
 	spawn:{
 		x: 5,
@@ -629,27 +601,34 @@ define.map({
 	]
 });
 
+// Level: Falling Box
 define.map({
 	spawn:{
-		x: 11,
-		y: 7
+		x: 27,
+		y: 6
 	},
-	width: 13,
-	height: 9,
-	cakes: 1,
+	width: 29,
+	height: 14,
+	cakes: 2,
 	map: [
-		["blank", "blank", "blank", "blank"],
-		["blank", "", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["blank", "cake", "flag", "", "spikes", "", "", "", "", "", "", "", "blank"],
-		["blank", "blank", "blank", "ladder", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "blank", "ladder", "", "", "", "spikes", "spikes", "", "", "", "blank"],
-		["", "", "blank", "ladder", "", "spikes", "", "", "", "", "", "", "blank"],
-		["", "", "blank", "ladder", "", "", "", "spikes", "", "", "", "", "blank"],
-		["", "", "blank", "ladder", "spikes", "", "", "", "", "", "", "", "blank"],
-		["", "", "blank", "blank", "blank", "blank", "blank", "water", "bounce", "blank", "blank", "blank", "blank"]
+		["", "", "", "blank", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+		["blank", "blank", "blank", "blank", "drop", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+		["blank", "cake", "", "", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+		["blank", "", "", "", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["blank", "blank", "blank", "blank", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "", "", "", "", "blank"],
+		["", "", "", "blank", "ladder", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "", "", "", "", "blank"],
+		["", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "cake", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "ladder", "", "", "flag", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "", "", "blank", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "blank"],
+		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["", "", "", "blank", "spikes", "spikes","blank",  "", "blank", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "blank"],
+		["", "", "", "blank", "blank", "blank", "blank", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
 });
 
+// Level: Box and Buttons 2
 define.map({
 	spawn:{
 		x: 27,
@@ -672,60 +651,6 @@ define.map({
 		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
 		["", "", "", "blank", "spikes", "spikes","blank",  "", "blank", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "blank"],
 		["", "", "", "blank", "blank", "blank", "blank", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
-	]
-});
-
-define.map({
-	spawn:{
-		x: 1,
-		y: 2
-	},
-	width: 26,
-	help: [
-		{
-			msg: "Welcome traveller!<br /><br />Collect the cakes to proceed to the next level.",
-			at: {x: -3, y: 1, w: 120},
-			behind: true,
-			trigger: {
-				type: "x_range",
-				from: 2,
-				to: 5
-			},
-			disperse: {
-				type: "collide"
-			}
-		}
-	],
-	height: 5,
-	cakes: 1,
-	map: [
-		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "", "", "sign_jump", "", "sign_wet", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "cake", "blank"],
-		["blank", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water", "water", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water", "blank", "blank", "blank", "blank"],
-		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
-	]
-});
-
-define.map({
-	spawn:{
-		x: 1,
-		y: 3
-	},
-	width: 21,
-	height: 10,
-	cakes: 4,
-	map: [
-		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "cake", "", "blank"],
-		["blank", "blank", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank"],
-		["blank", "blank", "blank", "blank", "", "", "cake", "", "", "", "cake", "", "", "", "cake", "", "", "blank", "blank", "blank", "blank"],
-		["blank", "blank", "blank", "blank", "", "", "bounce", "", "", "", "bounce", "", "", "", "bounce", "", "", "blank", "blank", "blank", "blank"],
-		["blank", "blank", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank"],
-		["blank", "blank", "blank", "blank", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "blank", "blank", "blank", "blank"],
-		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
 });
 
