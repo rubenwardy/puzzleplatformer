@@ -8,28 +8,32 @@ Crafty.scene("menu", function() {
 	// Set up style
 	Crafty.background("transparent");
 	Crafty.e("CloudSystem").clouds({top:0, height: 350, res: 23});
-	
+
+	Crafty.e("2D, DOM, Image")
+		.attr({x: -20, y: Crafty.viewport.height - 110})
+		.image("assets/sprites/pp.png");
+	Crafty.e("2D, DOM, Image")
+		.attr({x: Crafty.viewport.width - 190, y: Crafty.viewport.height - 115})
+		.image("assets/sprites/pp_right.png");
+
 	$("#fps").hide();
-	var d = "<div class=\"overlay\">\n<div id=\"menu\">\n";
-	d += "<h1>Puzzle Platformer</h1>\n";
-	d += "<div id=\"video\"></div>\n";
-	d += "<ul>\n";
+	var d = "<ul id=\"menu\">\n";
 	d += "<li><a onClick=\"play_game(-1);\">Play Game</a></li>\n";
 	d += "<li><a onClick=\"\">Level Select</a></li>\n";
 	d += "<li><a href=\"editor.html\">Map Editor</a></li>\n";
 	d += "<li><a onClick=\"$('#help').fadeToggle(100);\">Help</a></li>\n";
-	d += "</ul></div>\n";
+	d += "</ul>\n";
 	d += "<div id=\"help\" style=\"display:none;\">\n";
 	d += "<b>Help</b>\n";
 	d += "<p>Get all the cakes to win!</p>";
 	d += "<b>WASD</b> to Move<br>";
 	d += "<b>Space</b> to Jump<br>";
 	d += "</div>\n";
-	d += "</div>\n";
-	
+
 	$("body").append(d);
+	$("#menu").css("left", (Crafty.viewport.width/2 - $("#menu").width()/2 + 20) + "px");
 },function(){
-	$(".overlay").remove();
+	$("#menu").remove();
 	$("#fps").fadeIn();
 });
 
@@ -39,7 +43,7 @@ function play_game(map_id){
 	}else{
 		game.next_map = define._map[map_id];
 	}
-	
+
 	Crafty.scene("play");
 }
 var prev = 0;
@@ -49,15 +53,15 @@ Crafty.c('FPS_TICK', {
     init: function() {
         this.ticks = 0;
         this.lastReportedOn = new Date().getTime();
-        
+
         this.bind('MeasureRenderTime', function(elapsed) {
             this.ticks += 1;
-        });        
-        
+        });
+
         this.bind('EnterFrame', function() {
-            var now = new Date().getTime();            
+            var now = new Date().getTime();
             var seconds = (now - this.lastReportedOn) / 1000;
-            
+
             if (seconds >= 0.5) {
 				$("#fps").html(
 					"Puzzle Platform<br>" +
@@ -67,7 +71,7 @@ Crafty.c('FPS_TICK', {
 				);
 				this.ticks = 0;
 				this.lastReportedOn = now;
-            }			
+            }
         });
     }
 });
@@ -94,10 +98,10 @@ Crafty.scene("play", function () {
 
 	// FPS counter
 	var fps = Crafty.e("2D, FPS_TICK");
-	
+
 	// Initiate the inventory
 	game.inventory = {cake:0};
-	
+
 	/*Crafty.e("CloudSystem").clouds({
 		left:-Crafty.viewport.width/2,
 		width: 2*Crafty.viewport.width,

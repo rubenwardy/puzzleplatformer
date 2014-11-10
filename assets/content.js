@@ -13,7 +13,7 @@ Crafty.c("crushable",{
 
 		if (this.body)
 			Crafty.box2D.world.DestroyBody(this.body);
-			
+
 		if ((this.tile_data.respawn || this.tile_meta.respawn) && this.tile_meta.respawn != false)
 			Crafty.e("Tile").tile(this.tile_data.name, this.tile_p.x, this.tile_p.y, map.map_data.width, map.map_data.height);
 
@@ -35,16 +35,16 @@ Crafty.c("pull", {
 		Crafty.bind("using", this.end_use);
 		this.using = true;
 		game.player.lock_turn = game.player.lock_turn + 1;
-		
+
 		// Delta
 		var deltax = this.x - game.player.x;
 		var deltay = this.y - game.player.y;
 		this.delta = {x: deltax, y: deltay};
-		
+
 		// Destroy tile's body
 		Crafty.box2D.world.DestroyBody(this.body);
 		this.body = null;
-		
+
 		// Add as fixture
 		this.fixture = game.player.addFixture({
 			density: 0.1,
@@ -53,8 +53,9 @@ Crafty.c("pull", {
 		game.player.attach(this);
 		this.bind("EnterFrame", this.move_to_fix);
 		this.bind("KeyDown", this.keydown);
-		Crafty.bind("PlayerDeath", this.end_use);
-		
+		var this_item = this;
+		Crafty.bind("PlayerDeath", function(to) { this_item.end_use(this_item, to) });
+
 	},
 	move_to_fix: function() {
 		this.can_detach = true;
@@ -65,21 +66,18 @@ Crafty.c("pull", {
 			this.end_use();
 		}
 	},
-	end_use: function(to) {
-		console.log("calling end use...");
-		if (this.using && (to == null || this != to)) {
-			console.log("End use");
-			Crafty.unbind("using", this.end_use);
-			this.unbind("EnterFrame", this.move_to_fix);
-			this.unbind("KeyDown", this.keydown);
-			Crafty.unbind("PlayerDeath", this.end_use);
-			game.player.detach(this);
+	end_use: function(this_item, to) {
+		if (this_item.using && (to == null || this_item != to)) {
+			Crafty.unbind("using", this_item.end_use);
+			this_item.unbind("EnterFrame", this_item.move_to_fix);
+			this_item.unbind("KeyDown", this_item.keydown);
+			Crafty.unbind("PlayerDeath", this_item.end_use);
+			game.player.detach(this_item);
 			Crafty.box2D.world.DestroyBody(game.player.body);
 			game.player.physics();
-			//game.player.body.DestroyFixture(this.fixture);
-			this.using = false;
+			this_item.using = false;
 			game.player.lock_turn = game.player.lock_turn - 1;
-			this.init_physics();
+			this_item.init_physics();
 		}
 	}
 });
@@ -91,14 +89,14 @@ Crafty.c("DeathHazzard",{
 	_enterframe: function(){
 		if (!game.player)
 			return;
-			
+
 		if (this.contact("Player")){
 			game.player.hit(20);
 		}
-		
+
 		if (this.tile_data.crushes){
 			var obj = this.contact("crushable");
-			
+
 			for (var i=0;i<obj.length;i++){
 				obj[i].obj.crush();
 			}
@@ -117,13 +115,13 @@ Crafty.c("Button",{
 		if (this.contact("Obstacle, Player")){
 			if ( this.isdown != true && this.odown )
 				this.odown(this);
-			
+
 			this.isdown = true;
 			this.sprite(this.tile_data.tile.x + 1, this.tile_data.tile.y, 80, 80);
 		}else{
 			if ( this.isdown != false && this.oup )
 				this.oup(this);
-			
+
 			this.isdown = false;
 			this.sprite(this.tile_data.tile.x, this.tile_data.tile.y, 80, 80);
 		}
@@ -240,7 +238,7 @@ define.block({
 	desc: "Tech",
 	drawtype: "Block",
 	tile: {x: 3, y: 0, ani: {dur: 500, l: 2}},
-	physics: {		
+	physics: {
 		friction: 4,
 		restitution: 0
 	},
@@ -394,7 +392,7 @@ define.block({
 define.block({
 	name: "flag",
 	desc: "Flag",
-	drawtype: "Tile",	
+	drawtype: "Tile",
 	tile: {x: 3,y: 2, ani: {dur: 100, l:2}},
 	c: "Flag",
 	init: function(ent){
@@ -416,7 +414,7 @@ define.block({
 define.block({
 	name: "water",
 	desc: "Water",
-	drawtype: "Block",	
+	drawtype: "Block",
 	tile: {x: 0,y: 3, ani:{dur: 750, l:2}},
 	top: 38,
 	right: 80,
@@ -434,7 +432,7 @@ define.block({
 define.block({
 	name: "sign_jump",
 	desc: "Sign (Jump)",
-	drawtype: "Tile",	
+	drawtype: "Tile",
 	tile: {x: 3,y: 3, ani:{dur: 3000, l:3}},
 	ascii: 'S'
 });
@@ -442,7 +440,7 @@ define.block({
 define.block({
 	name: "sign_wet",
 	desc: "Sign (Wet)",
-	drawtype: "Tile",	
+	drawtype: "Tile",
 	tile: {x: 2,y: 3}
 });
 
@@ -483,7 +481,7 @@ define.block({
 				h:10,
 				z:ent.z
 			});
-			
+
 		var two = Crafty.e("ParticleSystem")
 			.particles({
 				delay: 10,
@@ -530,7 +528,23 @@ define.block({
 });
 
 // Maps
-/*define.map({
+define.map({
+	spawn:{
+		x: 1,
+		y: 2
+	},
+	width: 12,
+	height: 4,
+	cakes: 1,
+	map: [
+		["", "", "", ""],
+		["", "", "", "", ""],
+		["", "", "", "", "", "", "", "", "", "", "", "cake"],
+		["blank", "blank", "blank", "blank", "", "", "", "", "", "", "blank", "blank", "blank"]
+	]
+});
+
+define.map({
 	spawn:{
 		x: 3,
 		y: 2
@@ -552,7 +566,7 @@ define.block({
 		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "water", "water", "water", "blank", "water", "water", "water", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
 		["", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
-});*/
+});
 
 define.map({
 	spawn:{
