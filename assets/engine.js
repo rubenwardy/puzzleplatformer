@@ -94,7 +94,6 @@ Crafty.c("drawmode",{
 // Load
 Crafty.scene("Load", function() {
 	$("body").prepend("<canvas id='bg' style='position:absolute;'></canvas>");
-	$("#fps").hide();
 
 	if (!game.is_editor) {
 		Crafty.background("transparent");
@@ -109,8 +108,6 @@ Crafty.scene("Load", function() {
 			.textFont({ family: 'Arial',  size: '20px'})
 			.css("text-align", "center")
 			.text("rubenwardy");
-		$(".logo").hide();
-		$(".logo").fadeIn();
 	} else {
 		Crafty.background("#000");
 	}
@@ -158,7 +155,7 @@ Crafty.scene("Load", function() {
 			setTimeout(function() {
 				$(".logo").fadeOut();
 				setTimeout(function(){Crafty.scene(game.after_load);}, 500);
-			}, 2000 - (new Date().getTime() - time_before));
+			}, 700 - (new Date().getTime() - time_before));
 		}
 	});
 });

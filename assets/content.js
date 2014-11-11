@@ -104,6 +104,18 @@ Crafty.c("DeathHazzard",{
 	}
 });
 
+Crafty.c("bomb", {
+	init: function() {
+		this.bind("EnterFrame", this._enterframe);
+	},
+	_enterframe: function() {
+		if (this.contact && this.contact("Player")){
+			this.crush();
+			game.player.kill();
+		}
+	}
+});
+
 Crafty.c("Button",{
 	button: function(){
 		this.bind("EnterFrame",this._enterframe);
@@ -352,6 +364,26 @@ define.block({
 	},
 	crushes: true,
 	c: "DeathHazzard",
+	ascii: '^'
+});
+
+// Bouncing bombs
+define.block({
+	name: "bomb",
+	desc: "Bomb",
+	drawtype: "Tile",
+	c: "push, crushable, bomb",
+	respawn: true,
+	destructColor: "#666",
+	tile: {x: 5, y: 2},
+	crush_sound: AUDIO_CARDB_CRUSH,
+	physics: {
+		friction: 0,
+		restitution: 1,
+		bodyType: "dynamic",
+		density: 0.005
+	},
+	crushes: true,
 	ascii: '*'
 });
 
@@ -530,6 +562,28 @@ define.block({
 /*********************************
  *             LEVELS            *
  *********************************/
+ 
+define.map({
+	spawn:{
+		x: 1,
+		y: 2
+	},
+	width: 8,
+	height: 10,
+	cakes: 1,
+	map: [
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["blank", "", "", "", "bomb", "", "", "blank"],
+		["blank", "", "", "", "", "", "", "blank"],
+		["blank", "", "", "", "", "", "", "blank"],
+		["blank", "", "", "", "", "", "cake", "blank"],
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		[],
+		[],
+		[],
+		["", "", "", "", "", ""]
+	]
+});
 
 // Level: Tutorial, get cake
 define.map({
@@ -537,6 +591,8 @@ define.map({
 		x: 1,
 		y: 2
 	},
+	width: 4,
+	height: 4,
 	help: [
 		{
 			msg: "Welcome traveller!<br /><br />Collect the cakes to proceed to the next level.",
@@ -544,8 +600,6 @@ define.map({
 			behind: true
 		}
 	],
-	width: 4,
-	height: 4,
 	cakes:1,
 	map: [
 		["blank","blank","blank","blank"],
@@ -561,7 +615,8 @@ define.map({
 		x: 1,
 		y: 2
 	},
-	width: 26,
+	width: 26,	
+	height: 5,
 	help: [
 		{
 			msg: "Don't fall into<br />the water!",
@@ -569,7 +624,6 @@ define.map({
 			behind: true
 		}
 	],
-	height: 5,
 	cakes: 1,
 	map: [
 		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
@@ -577,6 +631,30 @@ define.map({
 		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "cake", "blank"],
 		["blank", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water", "water", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water", "blank", "blank", "blank", "blank"],
 		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
+	]
+});
+
+// Level: Tutorial, box and buttons
+define.map({
+	spawn:{
+		x: 5,
+		y: 2
+	},
+	width: 10,
+	height: 4,
+	help: [
+		{
+			msg: "Press E to pull the box,<br />Press E again to let go.",
+			at: {x: -3, y: 1, w: 120},
+			behind: true
+		}
+	],
+	cakes: 1,
+	map: [
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["blank", "", "", "", "", "", "", "tech", "", "blank"],
+		["blank", "box", "", {node:"button",method:"downtoggle",action:[{x:7,y:1},{x:7,y:2}]}, "", "", "", "tech", "cake", "blank"],
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
 });
 
@@ -598,6 +676,31 @@ define.map({
 		["blank","cake","","tech","tech","","","",{node:"button",method:"downtoggle",action:[{x:3,y:4},{x:3,y:5}]},"","","ladder","blank"],
 		["blank","blank","blank","blank","blank","blank","blank","spikes","blank","blank","blank","blank","blank"],
 		["blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank"]
+	]
+});
+
+// Level: Two doors
+define.map({
+	spawn:{
+		x: 3,
+		y: 2
+	},
+	width: 29,
+	height: 12,
+	cakes: 1,
+	map: [
+		["", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["", "", "blank", "", "", "", "", "", "", "", "tech", "", "", "", "", "blank"],
+		["", "", "blank", "", "", "", "", "", "", "", "tech", "", "", "cake", "", "blank"],
+		["blank", "blank", "blank", "blank", "blank", "blank", {node:"tech", visible:false}, {node:"tech", visible:false}, {node:"tech", visible:false}, "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["blank", "ladder", "", "", "", "tech", "ladder", "", "", "", "", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "", "", "", "tech", "ladder", "", "", "", "", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "", "", "", "", "", "", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "", "", "", "", "", "", "", "blank", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
+		["blank", "ladder", "", "", "", "", {node:"button",method:"downtoggle",action:[{x: 10, y:1}, {x:10, y:2}]}, "", "", "box", "blank", "ladder", "", "", {node:"button",method:"downtoggle",action:[{x:5,y:4},{x:5,y:5}, {x:6, y:3}, {x:7, y:3}, {x:8, y:3}]}, "", "", "", "", "", "", "", "", "flag", "", "box", "", "box", "blank"],
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "water", "water", "water", "blank", "water", "water", "water", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
 });
 
@@ -628,29 +731,4 @@ define.map({
 	]
 });
 
-// Level: Box and Buttons 2
-define.map({
-	spawn:{
-		x: 27,
-		y: 5
-	},
-	width: 29,
-	height: 13,
-	cakes: 2,
-	map: [
-		["blank", "blank", "blank", "blank", "drop", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-		["blank", "cake", "", "", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-		["blank", "", "", "", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["blank", "blank", "blank", "blank", "ladder", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "", "", "", "", "blank"],
-		["", "", "", "blank", "ladder", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "", "", "", "", "blank"],
-		["", "", "", "blank", "ladder", "", "", "", "", "", "", "", "", "", "", "cake", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "ladder", "", "", "flag", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "", "", "blank", "blank", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "bounce", "", "", "blank"],
-		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "", "", "blank", "", "blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["", "", "", "blank", "spikes", "spikes","blank",  "", "blank", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "spikes", "blank"],
-		["", "", "", "blank", "blank", "blank", "blank", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
-	]
-});
 

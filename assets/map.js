@@ -174,6 +174,23 @@ Crafty.c("Bubble_E",{
 
 });
 
+Crafty.c("LayerDebug", {
+	init: function() {
+		return;
+		this.text = Crafty.e("2D, DOM, Text")
+			.attr({x: -40, y: 40, w: 64, z: 1999})
+			.textFont({ family: 'Arial',  size: '10px'})
+			.css("text-align", "center")
+			.text(this.z);
+		this.attach(this.text);
+			
+		this.bind("EnterFrame", function() {
+			this.text.text(this.z);		
+		});
+	}
+
+});
+
 // Tile components
 Crafty.c("Tile",{
 	// Tile properties
@@ -189,10 +206,10 @@ Crafty.c("Tile",{
 	},
 
 	// Set up functions
-	tile: function(_tile,_x,_y,mapwidth,mapheight){
-		this.mapwidth = mapwidth;
+	tile: function(_tile, _x, _y, mapwidth, mapheight) {
+		this.mapwidth  = mapwidth;
 		this.mapheight = mapheight;
-		this.get_def(_tile,_x,_y);
+		this.get_def(_tile, _x, _y);
 
 		// Check stuff
 		if (!this.tile_data)
@@ -201,19 +218,25 @@ Crafty.c("Tile",{
 		// Load required components
 		this.addComponent(this.require());
 
-		// Set position
+		// Set position		
+		var z_shift = this.tile_data.z_shift;
+		if (!z_shift)
+			z_shift = 0;
 		this.attr({
-			x: (this.tile_p.x*64)-10,
-			y: (this.tile_p.y*64)-10,
-			z: _x + (mapheight-_y) * mapwidth
+			x: (this.tile_p.x * 64) - 10,
+			y: (this.tile_p.y * 64) - 10,
+			z: (_x + (mapheight - _y) * mapwidth) * 2 + z_shift
 		});
 		
 		this.bind("move",function() {
-			this.attr({z: Math.floor((this.x+10)/64 + (this.mapheight-(this.y+10)/65) * this.mapwidth)}); 
+			var z_shift = this.tile_data.z_shift;
+			if (!z_shift)
+				z_shift = 0;
+			this.attr({z: Math.round(((this.x + 10) / 64 + (this.mapheight - (this.y + 10) / 65) * this.mapwidth) * 2 + z_shift)}); 
 		});
 
 		// Do draw type
-		this.addComponent("Tile"+this.tile_data.drawtype);
+		this.addComponent("Tile" + this.tile_data.drawtype);
 		
 		
 		// Init physics
@@ -232,7 +255,7 @@ Crafty.c("Tile",{
 		return this;
 	},
 	require: function(){
-		var def = "2D, drawmode";
+		var def = "2D, drawmode, LayerDebug";
 		// Extra components
 		if (this.tile_data.c)
 			def += ", "+this.tile_data.c;
