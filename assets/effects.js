@@ -1,12 +1,7 @@
 /*
-**  PUZZLE PLATFORM
-**    by Andrew Ward (anjayward@gmail.com)
-**   (c) All rights reserved
-**   You may not modify, redistribute, sell,
-**   license this product in anyway.
-**
-**   Copyrights to scripts and resources
-**   in assets/libraries are owned by other people
+*	part of PUZZLE PLATFORMER
+*	   by rubenwardy (rubenwardy@gmail.com)
+*	Licensed under GNU GPL 3.0 or later. See LICENSE.txt
 */
 
 Crafty.c("ParticleSystem",{
@@ -39,7 +34,7 @@ Crafty.c("ParticleSystem",{
 	addParticle: function(){
 		var an = (Math.random() * 0.25 * Math.PI)-0.6*Math.PI;
 		var spawnpos = {x:this.x,y:this.y};
-		
+
 		if (this.data.spawn && this.data.spawn.pos){
 			if (this.data.spawn.pos.type == "range"){
 				spawnpos.x += (
@@ -54,7 +49,7 @@ Crafty.c("ParticleSystem",{
 				);
 			}
 		}
-		
+
 		var clr = this.data.color;
 		if (this.data.color instanceof Array) {
 			clr = this.data.color[Math.round(Math.random()*(this.data.color.length-1))];
@@ -62,24 +57,24 @@ Crafty.c("ParticleSystem",{
 		if (!clr || clr==""){
 			clr = "red";
 		}
-		
-		var velo = {x:0,y:0};		
+
+		var velo = {x:0,y:0};
 		if(this.data.spawn && this.data.spawn.velocity && this.data.spawn.velocity.constructor == Object){
 			velo = {x:this.data.spawn.velocity.x,y:this.data.spawn.velocity.y};
 		}else if (this.data.spawn && this.data.spawn.angle){
 			var an = 0;
-			
+
 			if (this.data.spawn.angle.type == "range"){
 				an = this.data.spawn.angle.from + (this.data.spawn.angle.to-this.data.spawn.angle.from)*Math.random();
 			}
-			
+
 			velo = {x:this.data.spawn.velocity * Math.cos(an*Math.PI),y:this.data.spawn.velocity * Math.sin(an*Math.PI)};
 		}
-		
+
 		var acc = {x:0, y:9.81};
 		if (this.data.spawn && this.data.spawn.acc)
 			acc = {x:this.data.spawn.acc.x,y:this.data.spawn.acc.y};
-		
+
 		//console.log("Adding particle ");
 		Crafty.e("2D, drawmode, TheParticle, Color")
 		.attr(spawnpos)
@@ -103,7 +98,7 @@ Crafty.c("TheParticle",{
 		this.expire = ex;
 		if (!this.expire.fo)
 			this.expire.fo = 0;
-		
+
 		this.decay = -1;
 		this.bind("EnterFrame",this.tick);
 	},
@@ -117,7 +112,7 @@ Crafty.c("TheParticle",{
 			(this.expire && this.expire.vx_lt && this.vel.x < this.expire.vx_lt)
 		){
 			if (this.decay == -1)
-				this.decay = now;	
+				this.decay = now;
 		}
 		if (this.decay != -1){
 			if (now > (this.decay + this.expire.fo)){
@@ -133,7 +128,7 @@ Crafty.c("TheParticle",{
 		this.y += this.vel.y * dtime;
 		this.vel.x += this.acc.x * 32 * dtime;
 		this.vel.y += this.acc.y * 32 * dtime;
-		
+
 		this.last = now;
 	}
 });
@@ -143,11 +138,11 @@ function ParticleExplosion(pos, speed, tcolor, g, timeout, width, amt){
 		width = 64;
 	if (!amt)
 		amt = 8;
-		
+
 	for (var x=0;x<amt;x++){
 		for (var y=0;y<amt;y++){
 			var xcolor = tcolor;
-			
+
 			if (xcolor instanceof Array) {
 				xcolor = xcolor[Math.round(Math.random()*(xcolor.length-1))];
 			}
@@ -157,7 +152,7 @@ function ParticleExplosion(pos, speed, tcolor, g, timeout, width, amt){
 			.attr({x:pos.x + x*(width/amt),y:pos.y + y*(width/amt)})
 			.attr({w:(width/amt),h:(width/amt),z:1002})
 			.color(xcolor);
-			
+
 			e.particle(
 				{x:speed * Math.cos(an),y:speed * Math.sin(an)},
 				{x:0,y:g},
@@ -180,27 +175,27 @@ Crafty.c("CloudSystem",{
 		this.data = data;
 		this.last = new Date().getTime();
         this.delay = 0;
-		
+
 		var width = Crafty.viewport.width;
 		if (this.data.width)
 			width = this.data.width;
 		var left = 0;
 		if (this.data.left)
 			left = this.data.left
-			
+
 		var res = 16;
 		if (this.data.res)
 			res = this.data.res;
-		
+
 		for (var i=0; i<=res+1; i++){
 			this.placeCloud((i/res) * width + left)
-		}		
+		}
 		this.bind("EnterFrame",this.tick);
 	},
 	tick: function(){
 		var now = new Date().getTime();
-		if (now > this.last + 4000){			
-			this.last = now;						
+		if (now > this.last + 4000){
+			this.last = now;
 			this.placeCloud(Crafty.viewport.width + 100);
 		}
 	},
@@ -211,8 +206,8 @@ Crafty.c("CloudSystem",{
 		var height = 200;
 		if (this.data.height)
 			height = this.data.height;
-	
-		//this.current_y = (this.current_y + 59) % 200;	
+
+		//this.current_y = (this.current_y + 59) % 200;
 		var cloud = Crafty.e("Cloud");
 		var new_y = this.old_y;
 		while (Math.abs(new_y-this.old_y) < 80){
@@ -222,9 +217,9 @@ Crafty.c("CloudSystem",{
 			x: x,
 			y: new_y // this.current_y + top
 		});
-		this.old_y = new_y;	
+		this.old_y = new_y;
 	}
-	
+
 });
 
 Crafty.c("Cloud",{
@@ -243,7 +238,7 @@ Crafty.c("Cloud",{
 		this.last = now;
 
 		this.x -= this.speed * dtime;
-		
+
 		if (this.x < -(Crafty.viewport.width/2)){
 			this.destroy();
 		}

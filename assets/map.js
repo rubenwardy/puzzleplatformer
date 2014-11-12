@@ -1,3 +1,9 @@
+/*
+*	part of PUZZLE PLATFORMER
+*	   by rubenwardy (rubenwardy@gmail.com)
+*	Licensed under GNU GPL 3.0 or later. See LICENSE.txt
+*/
+
 function Map(){
 	return {
 		tiles: null,
@@ -7,9 +13,9 @@ function Map(){
 				throw("MapNotFound");
 				return;
 			}
-		
+
 			this.tiles = [];
-			this.map_data = data;			
+			this.map_data = data;
 
 			for (var y = data.map.length-1; y >= 0; y--) {
 				this.tiles[y] = [];
@@ -22,12 +28,12 @@ function Map(){
 					}
 				}
 			}
-			
+
 			if (game.player){
 				game.player.newSpawn(data.spawn);
 				game.player.attr({x: data.spawn.x*64+15,y: data.spawn.y*64+25});
 			}
-			
+
 			if (this.map_data.help)
 				this.show_bubble(this.map_data.help[0]);
 		},
@@ -54,7 +60,7 @@ function Map(){
 		},
 		debug: function(){
 			var res = "";
-			for (var y=0;y<this.tiles.length;y++){				
+			for (var y=0;y<this.tiles.length;y++){
 				for (var x=0;x<this.tiles[y].length;x++){
 					if (this.tiles[y][x] && this.tiles[y][x].tile_meta && this.tiles[y][x].tile_data.ascii)
 						res += this.tiles[y][x].tile_data.ascii;
@@ -78,7 +84,7 @@ function Map(){
 					w = this.tiles[y].length;
 			}
 			this.map_data.width = w;
-			this.map_data.height = h;			
+			this.map_data.height = h;
 		},
 		getCakes: function(){
 			var c = 0;
@@ -91,7 +97,7 @@ function Map(){
 			return c;
 		},
 		save: function(){
-			var res = "";	
+			var res = "";
 			for (var y=0;y<this.tiles.length;y++){
 				if (res != "")
 					res += ",\n";
@@ -99,7 +105,7 @@ function Map(){
 				for (var x=0;x<this.tiles[y].length;x++){
 					if (row!="")
 						row += ", ";
-						
+
 					if (this.tiles[y][x] && this.tiles[y][x].tile_meta && this.tiles[y][x].tile_meta.node)
 						row += '"' + this.tiles[y][x].tile_meta.node + '"';
 					else
@@ -112,13 +118,13 @@ function Map(){
 		raycast_player: function(from, to, rect, step){
 			function interRect(one, other) {
 				return !(
-					other.x > one.x + one.w || 
-					other.x + other.w < one.x || 
+					other.x > one.x + one.w ||
+					other.x + other.w < one.x ||
 					other.y > one.y + one.h ||
 					other.y + other.h < one.y
 				);
 			};
-		
+
 			var distance = Math.sqrt( Math.pow(from.x - to.x, 2) + Math.pow(from.y - to.y, 2) );
 			var direction = Math.atan((to.y - from.y) / (to.x - from.x));
 			for (var i = 0; i < distance; i += step){
@@ -133,7 +139,7 @@ function Map(){
 			}
 			if (interRect(rect, {x: to.x, y: to.y, w: 27, h: 29}))
 				return true;
-				
+
 			return false;
 		},
 		show_bubble: function(data){
@@ -148,7 +154,7 @@ Crafty.c("Bubble_E",{
 		this.bub_id = BUBBLES;
 		BUBBLES = BUBBLES + 1;
 	},
-	bubble: function(data){		
+	bubble: function(data){
 		if (data.at){
 			this.requires("2D, DOM, bubble, Text");
 			this.text(data.msg);
@@ -163,8 +169,8 @@ Crafty.c("Bubble_E",{
 				this.attr({w: data.at.w});
 			if (data.at.h)
 				this.attr({h: data.at.h});
-			
-		}else{		
+
+		}else{
 			$("#bubble").remove();
 			$("body").append("<div id=\"bubble_" + this.bub_id + "\" class=\"bubble\">" + data.msg + "</div>");
 			if (data.behind)
@@ -183,9 +189,9 @@ Crafty.c("LayerDebug", {
 			.css("text-align", "center")
 			.text(this.z);
 		this.attach(this.text);
-			
+
 		this.bind("EnterFrame", function() {
-			this.text.text(this.z);		
+			this.text.text(this.z);
 		});
 	}
 
@@ -197,7 +203,7 @@ Crafty.c("Tile",{
 	tile_data: null, // The tile definition
 	tile_meta: null, // The tile meta data
 	tile_p: null, // The tile position
-	
+
 	show: function(){
 		this.visible = true;
 	},
@@ -218,7 +224,7 @@ Crafty.c("Tile",{
 		// Load required components
 		this.addComponent(this.require());
 
-		// Set position		
+		// Set position
 		var z_shift = this.tile_data.z_shift;
 		if (!z_shift)
 			z_shift = 0;
@@ -227,18 +233,18 @@ Crafty.c("Tile",{
 			y: (this.tile_p.y * 64) - 10,
 			z: (_x + (mapheight - _y) * mapwidth) * 2 + z_shift
 		});
-		
+
 		this.bind("move",function() {
 			var z_shift = this.tile_data.z_shift;
 			if (!z_shift)
 				z_shift = 0;
-			this.attr({z: Math.round(((this.x + 10) / 64 + (this.mapheight - (this.y + 10) / 65) * this.mapwidth) * 2 + z_shift)}); 
+			this.attr({z: Math.round(((this.x + 10) / 64 + (this.mapheight - (this.y + 10) / 65) * this.mapwidth) * 2 + z_shift)});
 		});
 
 		// Do draw type
 		this.addComponent("Tile" + this.tile_data.drawtype);
-		
-		
+
+
 		// Init physics
 		if (this.tile_meta && this.tile_meta.visible == false) {
 			this.hide();
@@ -278,7 +284,7 @@ Crafty.c("Tile",{
 		}
 
 		this.tile_data = define._bloc[tile];
-		
+
 		if (!this.tile_data && define._alias[tile]){
 			this.tile_meta.node = define._alias[tile];
 			this.tile_data = define._bloc[define._alias[tile]];
@@ -302,12 +308,12 @@ Crafty.c("Tile",{
 
 Crafty.c("TileTile",{
 	spritemap: null,
-	init: function(){		
+	init: function(){
 		if (this.tile_data.tile && this.tile_data.tile.tile)
 			this.spritemap = this.tile_data.tile.tile;
 		else
-			this.spritemap = "default";	
-		
+			this.spritemap = "default";
+
 		if (this.tile_data.tile && this.tile_data.tile.ani) {
 			this.applyAnimation(this.tile_data.tile, this);
 		}else{
@@ -316,7 +322,7 @@ Crafty.c("TileTile",{
 			this.sprite(this.tile_data.tile.x, this.tile_data.tile.y, 80, 80);
 			this.crop(0, 0, 80, 80);
 		}
-		
+
 		if (game.is_editor && this.tile_data.drawtype=="Block")
 			this.visible = false;
 
@@ -324,7 +330,7 @@ Crafty.c("TileTile",{
 	},
 	applyAnimation: function(tile_data, sprite){
 		sprite.requires("SpriteAnimation");
-		sprite.addComponent(this.spritemap);	
+		sprite.addComponent(this.spritemap);
 		var frames = [];
 		if (tile_data.ani.frames) {
 			frames = tile_data.ani.frames;
@@ -340,15 +346,15 @@ Crafty.c("TileTile",{
 
 Crafty.c("TileBlock",{
 	front: null,
-	init: function(){		
+	init: function(){
 		this.addComponent("TileTile");
 		this.front = Crafty.e("2D, drawmode");
 		if (this.tile_data.tile && this.tile_data.tile.ani)
 			this.applyAnimation(this.tile_data.tile, this.front);
-		else{			
+		else{
 			this.front.requires("Sprite");
 			this.front.addComponent(this.spritemap);
-			this.front.sprite(this.tile_data.tile.x, this.tile_data.tile.y, 80, 80);			
+			this.front.sprite(this.tile_data.tile.x, this.tile_data.tile.y, 80, 80);
 		}
 		function getOrDef(one, two){
 			if (one!=null)
@@ -359,7 +365,7 @@ Crafty.c("TileBlock",{
 		var height = getOrDef(this.tile_data.top, 15);
 		var right = getOrDef(this.tile_data.right, 64);
 		var bottom = getOrDef(this.tile_data.bottom, 80);
-		this.front.crop(0, height, right, bottom - height);		
+		this.front.crop(0, height, right, bottom - height);
 		this.front.attr({
 			x: (this.tile_p.x*64)-10,
 			y: (this.tile_p.y*64)-10+height,
@@ -370,7 +376,7 @@ Crafty.c("TileBlock",{
 	},
 	show: function(){
 		this.visible = true;
-		this.front.visible = true;		
+		this.front.visible = true;
 	},
 	hide: function(){
 		this.visible = false;
@@ -383,7 +389,7 @@ Crafty.c("TilePhysics",{
 	init_physics: function(){
 		// Get physics object def
 		this._physics = this.tile_data.physics;
-		
+
 		if (!this._physics.isSensor){
 			this.addComponent("Obstacle");
 		}

@@ -1,3 +1,9 @@
+/*
+*	part of PUZZLE PLATFORMER
+*	   by rubenwardy (rubenwardy@gmail.com)
+*	Licensed under GNU GPL 3.0 or later. See LICENSE.txt
+*/
+
 game.after_load = "menu";
 
 /*

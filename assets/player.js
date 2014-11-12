@@ -1,12 +1,7 @@
 /*
-**  PUZZLE PLATFORM
-**    by Andrew Ward (anjayward@gmail.com)
-**   (c) All rights reserved
-**   You may not modify, redistribute, sell
-**   or license this product in any way.
-**
-**   Copyrights to scripts and resources
-**   in assets/libraries are owned by other people
+*	part of PUZZLE PLATFORMER
+*	   by rubenwardy (rubenwardy@gmail.com)
+*	Licensed under GNU GPL 3.0 or later. See LICENSE.txt
 */
 
 var FACING_RIGHT   = 0;
@@ -79,7 +74,7 @@ Crafty.c("Player",{
 		}, 10);
 	},
 	goto: function(pos){
-		console.log("Going to tile ("+pos.x+","+pos.y+")");		
+		console.log("Going to tile ("+pos.x+","+pos.y+")");
 		this.body.SetPosition({x: pos.x,y: pos.y});
 		this.body.SetAwake(true);
 	},
@@ -125,10 +120,10 @@ Crafty.c("Player",{
 			}
 		});*/
 		this.bind("EnterFrame",this._enterframe);
-		this.bind("KeyDown", function(e) {				
+		this.bind("KeyDown", function(e) {
 			if (!this.body || this.freeze)
 				return;
-			
+
 			// Punch
 			if (e.key == Crafty.keys.K) {
 				if (this.facing == FACING_RIGHT) {
@@ -141,12 +136,12 @@ Crafty.c("Player",{
 						contact[0].obj.crush();
 				}
 			}
-			
+
 			// Use
 			if (e.key == Crafty.keys.E) {
 				if (this.facing == FACING_RIGHT) {
 					var contact = this.contactWithFixture("usable", this.right_hand);
-					if (contact) {					
+					if (contact) {
 						Crafty.trigger("using", contact[0].obj);
 						contact[0].obj.use();
 					}
@@ -155,7 +150,7 @@ Crafty.c("Player",{
 					if (contact)
 						contact[0].obj.use();
 				}
-			}			
+			}
 		});
 
 		return this;
@@ -167,7 +162,7 @@ Crafty.c("Player",{
 			setTimeout(function(){
 				game.switching = false;
 				game.next_map = define._map[map.map_data.id + 1];
-				
+
 				if (game.next_map)
 					Crafty.scene("play");
 				else
@@ -175,19 +170,19 @@ Crafty.c("Player",{
 			}, 2000);
 			return;
 		}
-		
+
 		// Die and revive
 		if (this.health <= 0){
 			if (!this.dstart)
 				this.kill();
-				
+
 			if (new Date().getTime() > this.dstart + 500)
 				this.revive();
 			return;
 		}
 		if (!this.body || this.freeze)
 			return;
-		
+
 		// Die if falling too far
 		if (this.y > (map.map_data.height + 5)* 64){
 			this.kill();
@@ -197,15 +192,15 @@ Crafty.c("Player",{
 	},
 	update_player: function() {
 		assert(this.lock_turn >= 0);
-		
+
 		var on_ladder = (this.contact("Ladder"))?true:false;
 		var up_key = (Crafty.keydown[Crafty.keys['W']] || Crafty.keydown[Crafty.keys['UP_ARROW']] || Crafty.keydown[Crafty.keys['SPACE']]);
 		var left_key = (Crafty.keydown[Crafty.keys['A']] || Crafty.keydown[Crafty.keys['LEFT_ARROW']]);
 		var right_key = (Crafty.keydown[Crafty.keys['D']] || Crafty.keydown[Crafty.keys['RIGHT_ARROW']]);
-		
+
 		// Physics
 		var vvel = 3.8;
-		
+
 		// Ladder physics
 		if (on_ladder) {
 			this.body.ApplyForce(new b2Vec2(0, -(9.81 * this.body.GetMass())), this.body.GetPosition());
@@ -218,13 +213,13 @@ Crafty.c("Player",{
 				this.body.ApplyImpulse(new  b2Vec2(0, -0.7), this.body.GetPosition());
 		} else {
 			this.body.SetLinearDamping(0.5);
-			
+
 			// Handle Jumping
 			var on_ground = (this.contactWithFixture("Obstacle", this.foot)) ? true : false;
 			if (up_key && on_ground)
 				this.body.ApplyImpulse(new  b2Vec2(0,-0.5), this.body.GetPosition());
 		}
-		
+
 		// Walk left
 		if (left_key) {
 			if (this.lock_turn == 0)
@@ -273,7 +268,7 @@ Crafty.c("PickUp",{
 	_enterframe: function(){
 		this.count += 1;
 		if ( this.count > 2 ){
-			this.count = 0;			
+			this.count = 0;
 			var now_pos = {x: game.player.x, y: game.player.y, w: 27, h: 29};
 			if (!this.last_pos){
 				this.last_pos = now_pos;
@@ -285,14 +280,14 @@ Crafty.c("PickUp",{
 					game.inventory[this.type]+=this.amount;
 				else
 					game.inventory[this.type]=this.amount;
-					
+
 				console.log(this.amount+"x "+this.type+" added to the Inventory");
 				Crafty.trigger("PickUp",{type:this.type,amount:this.amount});
 				if (this.tile_data.onPickUp){
 					this.tile_data.onPickUp(this);
 				}
-			}			
-			this.last_pos = now_pos;			
+			}
+			this.last_pos = now_pos;
 		}
 	}
 });
@@ -308,16 +303,16 @@ Crafty.c("Flag",{
 		this.bind("reset_flags", function(){
 			if (this.tile_data.onFlagReset)
 				this.tile_data.onFlagReset(this);
-				
+
 			this.triggered = false;
 		});
 	},
 	_enterframe: function(){
 		if (this.triggered)
-			return; 
+			return;
 		this.count += 1;
 		if ( this.count > 2 ){
-			this.count = 0;			
+			this.count = 0;
 			var now_pos = {x: game.player.x, y: game.player.y, w: 27, h: 29};
 			if ( !this.last_pos ){
 				this.last_pos = now_pos;
@@ -325,15 +320,15 @@ Crafty.c("Flag",{
 			}
 			if ( map.raycast_player(this.last_pos, now_pos, {x: this.x+10, y: this.y+10, w: 62, h: 62}, 2) ){
 				Crafty.trigger("reset_flags");
-			
+
 				game.player.newSpawn({x: this.tile_p.x, y: this.tile_p.y});
-				
+
 				if (this.tile_data.onFlag)
 					this.tile_data.onFlag(this);
-					
+
 				this.triggered = true;
 			}
-			
+
 		}
 	}
 });

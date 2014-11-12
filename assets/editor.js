@@ -1,3 +1,9 @@
+/*
+*	part of PUZZLE PLATFORMER
+*	   by rubenwardy (rubenwardy@gmail.com)
+*	Licensed under GNU GPL 3.0 or later. See LICENSE.txt
+*/
+
 game.after_load = "editor";
 game.is_editor = true;
 
@@ -6,7 +12,7 @@ function ed_save(){
 	var maps = map.save();
 	map.getDim();
 	var cakes = map.getCakes();
-	
+
 	var res = "define.map({\n";
 	res += "\tspawn:{\n";
 	res += "\t\tx: 1,\n";
@@ -19,7 +25,7 @@ function ed_save(){
 	res += maps;
 	res += "\n\t]\n";
 	res += "});";
-	
+
 	$("#load_dia").remove();
 	var out = '<div id="load_dia"><h2>Save Level</h2><textarea id="load_code">'+res+'</textarea>';
 	out += '<p><a onClick="$(\'#load_dia\').remove();">Close</a></p></div>';
@@ -51,7 +57,7 @@ var NEXT_MAP = {
 
 function ed_doload(){
 	code = $("#load_code").val();
-	console.log(code);	
+	console.log(code);
 	$("#load_dia").remove();
 	eval(code);
 	NEXT_MAP = define._map[define._map.length-1];
@@ -122,7 +128,7 @@ function dotool(x,y){
 	if (EDMODE == "rubber"){
 		map.set(x,y,'');
 	}else if (EDMODE == "player"){
-	
+
 	}else{
 		map.set(x,y,EDMODE);
 	}
@@ -140,7 +146,7 @@ Crafty.scene("editor", function () {
 	// Debugging background:
 	//		warns user that the script has not finished.
 	Crafty.background("#ffcccc");
-	var tmp = 'Level Editor<hr style="border: 0;height:1px;background:black;">';//'<div id="editor">';	
+	var tmp = 'Level Editor<hr style="border: 0;height:1px;background:black;">';//'<div id="editor">';
 	tmp += '<a onClick=\"ed_save();\" style="text-decoration:underline;">Save</a> - ';
 	tmp += '<a onClick=\"ed_load();\" style="text-decoration:underline;">Load</a>';
 	tmp += ' - <a href=\"index.html\">Exit</a>';
@@ -160,24 +166,24 @@ Crafty.scene("editor", function () {
 			tmp += '<li><a id="'+b.name+'" onClick="change_mode(\''+b.name+'\');">'+b.desc+'</a></li>';
 		else
 			tmp += '<li><a id="'+b.name+'" onClick="change_mode(\''+b.name+'\');">'+b.name+'</a></li>';
-	}	
+	}
 	tmp += '</ul>';
 	tmp += '</div>';
-	$("#panel").append(tmp);	
+	$("#panel").append(tmp);
 
 	// FPS counter
 	/*var fps = Crafty.e("FPS")
 	.bind("MessureFPS",function(fps){
 		var res = "Map Editor<br>";
-		res += "FPS: " + fps.value;		
+		res += "FPS: " + fps.value;
 		$("#fps").html(res);
 	});*/
-	
+
 	Crafty.e("Keyboard").bind("EnterFrame",function(){
-		var cur = (new Date).getTime();   
+		var cur = (new Date).getTime();
 		var dt = (cur - prev) / 1000;
-        prev = cur;       
-	
+        prev = cur;
+
 		var sp = 128;
 		if ((Crafty.keydown[Crafty.keys['W']] || Crafty.keydown[Crafty.keys['UP_ARROW']])){
 			Crafty.viewport.y += sp * dt;
@@ -193,7 +199,7 @@ Crafty.scene("editor", function () {
 		}
 		render_bg();
 	});
-	
+
 	var win = $(window)[0];
 	win.addEventListener('mousemove', function(e) {
         game.mouse = {

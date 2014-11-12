@@ -1,3 +1,9 @@
+/*
+*	part of PUZZLE PLATFORMER
+*	   by rubenwardy (rubenwardy@gmail.com)
+*	Licensed under GNU GPL 3.0 or later. See LICENSE.txt
+*/
+
 // Define the sprite maps
 define.sprite("default","assets/sprites/tiles.png");
 define.sprite("editor","assets/sprites/editor.png");
@@ -562,28 +568,6 @@ define.block({
 /*********************************
  *             LEVELS            *
  *********************************/
- 
-define.map({
-	spawn:{
-		x: 1,
-		y: 2
-	},
-	width: 8,
-	height: 10,
-	cakes: 1,
-	map: [
-		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["blank", "", "", "", "bomb", "", "", "blank"],
-		["blank", "", "", "", "", "", "", "blank"],
-		["blank", "", "", "", "", "", "", "blank"],
-		["blank", "", "", "", "", "", "cake", "blank"],
-		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		[],
-		[],
-		[],
-		["", "", "", "", "", ""]
-	]
-});
 
 // Level: Tutorial, get cake
 define.map({
@@ -615,7 +599,7 @@ define.map({
 		x: 1,
 		y: 2
 	},
-	width: 26,	
+	width: 26,
 	height: 5,
 	help: [
 		{
