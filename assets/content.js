@@ -571,6 +571,7 @@ define.block({
 
 // Level: Tutorial, get cake
 define.map({
+	title: "Tutorial: Get Cake",
 	spawn:{
 		x: 1,
 		y: 2
@@ -595,6 +596,7 @@ define.map({
 
 // Level: Tutorial, water bounce
 define.map({
+	title: "Tutorial: Jumping",
 	spawn:{
 		x: 1,
 		y: 2
@@ -620,6 +622,7 @@ define.map({
 
 // Level: Tutorial, box and buttons
 define.map({
+	title: "Tutorial: Buttons",
 	spawn:{
 		x: 5,
 		y: 2
@@ -644,6 +647,7 @@ define.map({
 
 // Level: Box and Buttons 1
 define.map({
+	title: "Box and Buttons",
 	spawn:{
 		x: 5,
 		y: 5
@@ -665,6 +669,7 @@ define.map({
 
 // Level: Two doors
 define.map({
+	title: "Two Doors",
 	spawn:{
 		x: 3,
 		y: 2
@@ -690,6 +695,7 @@ define.map({
 
 // Level: Falling Box
 define.map({
+	title: "Falling Box",
 	spawn:{
 		x: 27,
 		y: 6
@@ -714,5 +720,3 @@ define.map({
 		["", "", "", "blank", "blank", "blank", "blank", "", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
 });
-
-

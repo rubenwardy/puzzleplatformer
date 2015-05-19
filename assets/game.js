@@ -30,7 +30,7 @@ Crafty.scene("menu", function() {
 	$("#fps").hide();
 	var d = "<ul id=\"menu\">\n";
 	d += "<li><a onClick=\"play_game(-1);\">Play Game</a></li>\n";
-	d += "<li><a onClick=\"\">Level Select</a></li>\n";
+	d += "<li><a onClick=\"Crafty.scene('level_select');\">Level Select</a></li>\n";
 	d += "<li><a href=\"editor.html\">Map Editor</a></li>\n";
 	d += "<li><a onClick=\"$('#help').fadeToggle(100);\">Help</a></li>\n";
 	d += "</ul>\n";
@@ -48,8 +48,43 @@ Crafty.scene("menu", function() {
 	$("#fps").fadeIn();
 });
 
+Crafty.scene("level_select", function() {
+	// Set up style
+	Crafty.background("transparent");
+	Crafty.e("CloudSystem").clouds({top:0, height: 350, res: 23});
+
+	Crafty.e("2D, DOM, Image")
+		.attr({x: -20, y: Crafty.viewport.height - 110})
+		.image("assets/sprites/pp.png");
+	Crafty.e("2D, DOM, Image")
+		.attr({x: Crafty.viewport.width - 190, y: Crafty.viewport.height - 115})
+		.image("assets/sprites/pp_right.png");
+	Crafty.e("2D, DOM, Text, logo")
+		.attr({x: 0, y: 20, w: Crafty.viewport.width})
+		.textFont({ family: 'Arial',  size: '40px'})
+		.css("text-align", "center")
+		.text("Puzzle Platformer");
+
+	$("#fps").hide();
+	var d = "<ul id=\"level_select\">\n";
+
+	for (var i = 0; i < define._map.length; i++) {
+		var map = define._map[i];
+		if (map.title)
+			d += "<li><a onClick=\"play_game(" + i + ");\">" + map.title + "</a></li>\n";
+		else
+			d += "<li><a onClick=\"play_game(" + i + ");\">Untitled Map " + i + "</a></li>\n";
+	}
+	d += "</ul>";
+	$("body").append(d);
+	$("#level_select").css("left", (Crafty.viewport.width/2 - $("#level_select").width()/2 + 20) + "px");
+},function(){
+	$("#level_select").remove();
+	$("#fps").fadeIn();
+});
+
 function play_game(map_id){
-	if (map_id){
+	if (!map_id || map_id < 0){
 		game.next_map = define._map[0];
 	}else{
 		game.next_map = define._map[map_id];
@@ -59,6 +94,7 @@ function play_game(map_id){
 }
 var prev = 0;
 game.fpsco = 10000;
+
 
 Crafty.c('FPS_TICK', {
     init: function() {

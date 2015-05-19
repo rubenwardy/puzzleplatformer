@@ -7,6 +7,7 @@
 var FACING_RIGHT   = 0;
 var FACING_LEFT    = 1;
 var FACING_FORWARD = 2;
+var PLAYER_Z       = 700;
 
 // Player component
 // Handles player related stuff
@@ -88,15 +89,15 @@ Crafty.c("Player",{
 	},
 	player: function(){
 		// Set up physics
-		this.attr({w:20,h:46,z:500});
+		this.attr({w:20,h:46,z:PLAYER_Z});
 
 		// Create body parts
 		this.head = Crafty.e("2D, drawmode, SpriteAnimation, PlayerHead")
-			.attr({x:3,z:501});
+			.attr({x:3,z: PLAYER_Z + 1});
 		this.pbody = Crafty.e("2D, drawmode, SpriteAnimation, PlayerBody")
-			.attr({y:8,z:500});
+			.attr({y:8,z: PLAYER_Z});
 		this.deadbody = Crafty.e("2D, drawmode, SpriteAnimation, DeadPlayer");
-		this.deadbody.attr({y:8,x:-2,z:500});
+		this.deadbody.attr({y:8,x:-2,z: PLAYER_Z});
 
 		// Attach body parts
 		this.attach(this.head);
