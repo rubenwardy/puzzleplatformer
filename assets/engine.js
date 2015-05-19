@@ -10,7 +10,7 @@ var game = {
 	next_map: "not-ready"
 };
 var AUDIO_CARDB_CRUSH = "boxCrush1";
-var AUDIO_DEATH = "playerDie";
+var AUDIO_DEATH = "";
 var DEBUG = true;
 
 function assert(cond) {
@@ -123,8 +123,7 @@ Crafty.scene("Load", function() {
 		"assets/sprites/player_head.png",
 		"assets/sprites/DeadPlayer.png",
 		"assets/sprites/cloud.png",
-		"assets/sounds/cboxCrush.wav",
-		"assets/sounds/playerDie.wav"
+		"assets/sounds/cboxCrush.wav"
 	];
 
 	for (key in define._sprite){

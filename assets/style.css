@@ -152,6 +152,7 @@ div{
 	display: block;
 	padding: 10px;
 	border-radius: 5px;
+	text-align: center;
 }
 
 #level_select li a:hover {

@@ -612,10 +612,16 @@ define.map({
 	],
 	cakes: 1,
 	map: [
-		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
-		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "blank"],
-		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "cake", "blank"],
-		["blank", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water", "water", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water", "blank", "blank", "blank", "blank"],
+		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce", "bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "bounce",
+		"bounce", "blank", "blank", "blank", "blank", "blank", "blank", "blank"],
+		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+		"", "blank"],
+		["blank", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+		"cake", "blank"],
+		["blank", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water",
+		"water", "water",
+		"water", "blank", "blank", "bounce", "water", "water", "water", "water", "water", "water", "water", "water",
+		"blank", "blank", "blank", "blank"],
 		["blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank", "blank"]
 	]
 });
