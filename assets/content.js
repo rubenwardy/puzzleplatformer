@@ -5,8 +5,8 @@
 */
 
 // Define the sprite maps
-define.sprite("default","assets/sprites/tiles.png");
-define.sprite("editor","assets/sprites/editor.png");
+define.sprite("default", "assets/sprites/tiles.png");
+define.sprite("editor" , "assets/sprites/editor.png");
 
 // Can take damage
 Crafty.c("crushable",{
@@ -146,18 +146,18 @@ Crafty.c("Button",{
 	}
 });
 
-var button_init =  function(ent){
+var button_init = function(ent) {
 	ent.button();
-	ent.OnDown(function(ent){
-		if (ent.tile_meta.method == 'downtoggle'){
-			for(var i=0;i<ent.tile_meta.action.length;i++){
+	ent.OnDown(function(ent) {
+		if (ent.tile_meta.method == 'downtoggle') {
+			for(var i=0;i<ent.tile_meta.action.length;i++) {
 				var x = ent.tile_meta.action[i].x;
 				var y = ent.tile_meta.action[i].y;
 				var tmp = map.tiles[y][x];
-				if (tmp.visible){
+				if (tmp.visible) {
 					tmp.hide();
 					Crafty.box2D.world.DestroyBody(tmp.body);
-				}else{
+				} else {
 					tmp.show();
 					if (tmp.init_physics){
 						tmp.init_physics();
@@ -170,54 +170,54 @@ var button_init =  function(ent){
 					}
 				 }
 			}
-		}else 	if (ent.tile_meta.method == 'toggle'){
-			for(var i=0;i<ent.tile_meta.action.length;i++){
+		} else if (ent.tile_meta.method == 'toggle') {
+			for(var i=0;i<ent.tile_meta.action.length;i++) {
 				var x = ent.tile_meta.action[i].x;
 				var y = ent.tile_meta.action[i].y;
 				var tmp = map.tiles[y][x];
-				if (tmp.visible){
+				if (tmp.visible) {
 					tmp.hide();
 					Crafty.box2D.world.DestroyBody(tmp.body);
-				}else{
+				} else {
 					tmp.show();
-					if (tmp.init_physics){
+					if (tmp.init_physics) {
 						tmp.init_physics();
 						var con = Crafty("crushable");
 						con.each(function(i){
-							if (this.contains(x*64+10,y*64+10,20,20)){
+							if (this.contains(x*64 + 10, y*64 + 10, 20, 20)) {
 								this.crush();
 							}
 						});
 					}
 				 }
 			}
-		}else if (ent.tile_meta.method == 'func'){
+		} else if (ent.tile_meta.method == 'func') {
 			ent.tile_meta.action(ent,"down");
 		}
 	});
 	ent.OnUp(function(ent){
-		if (ent.tile_meta.method == 'downtoggle'){
-			for(var i=0;i<ent.tile_meta.action.length;i++){
+		if (ent.tile_meta.method == 'downtoggle') {
+			for (var i=0;i<ent.tile_meta.action.length;i++) {
 				var x = ent.tile_meta.action[i].x;
 				var y = ent.tile_meta.action[i].y;
 				var tmp = map.tiles[y][x];
-				if (tmp.visible){
+				if (tmp.visible) {
 					tmp.hide();
 					Crafty.box2D.world.DestroyBody(tmp.body);
-				}else{
+				} else {
 					tmp.show();
-					if (tmp.init_physics){
+					if (tmp.init_physics) {
 						tmp.init_physics();
 						var con = Crafty("crushable");
-						con.each(function(i){
-							if (this.contains(x*64+10,y*64+10,20,20)){
+						con.each(function(i) {
+							if (this.contains(x*64+10,y*64+10,20,20)) {
 								this.crush();
 							}
 						});
 					}
 				 }
 			}
-		}else if (ent.tile_meta.method == 'func'){
+		} else if (ent.tile_meta.method == 'func') {
 			ent.tile_meta.action(ent,"up");
 		}
 	});
@@ -475,95 +475,6 @@ define.block({
 	ascii: 'S'
 });
 
-define.block({
-	name: "sign_wet",
-	desc: "Sign (Wet)",
-	drawtype: "Tile",
-	tile: {x: 2,y: 3}
-});
-
-// Fire
-define.block({
-	name: "fire",
-	desc: "Fire",
-	drawtype: "None",
-	physics: {
-		bodyType: "static",
-		isSensor: true
-	},
-	c: "",
-	init: function(ent){
-		var one = Crafty.e("ParticleSystem")
-			.particles({
-				delay: 25,
-				decay: {
-					t: 300,
-					fo: 750
-				},
-				color: ["grey","darkgrey"],
-				spawn: {
-					pos: {
-						type: "range",
-						from: [0,0],
-						to: [64,0]
-					},
-					velocity: {x:0,y:-100},
-					acc: {x:0,y:0},
-					amt: 3
-				}
-			})
-			.attr({
-				x:ent.x,
-				y:ent.y+44,
-				w:10,
-				h:10,
-				z:ent.z
-			});
-
-		var two = Crafty.e("ParticleSystem")
-			.particles({
-				delay: 10,
-				decay: {
-					t: 200,
-					fo: 200
-				},
-				color: ["red","orange"],
-				spawn: {
-					pos: {
-						type: "range",
-						from: [0,0],
-						to: [64,0]
-					},
-					velocity: {x:0,y:-100},
-					acc: {x:0,y:0},
-					amt: 5
-				}
-			})
-			.attr({
-				x:ent.x,
-				y:ent.y+64,
-				w:10,
-				h:10,
-				z:ent.z
-			});
-		ent.attach(one);
-		ent.attach(two);
-		ent.hit_tick = 0;
-		if (game.player)
-			ent.bind("EnterFrame",function(){
-				var now = new Date().getTime();
-				if (now > this.hit_tick+1000){
-					this.hit_tick = now;
-					if (this.contact("Player")){
-						game.player.hit(1);
-					}
-				}
-			});
-		return false;
-	},
-	init_req: true,
-	ascii: '$'
-});
 
 /*********************************
  *             LEVELS            *
