@@ -480,6 +480,23 @@ define.block({
  *             LEVELS            *
  *********************************/
 
+define.map({
+	spawn:{
+		x: 1,
+		y: 2
+	},
+	width: 8,
+	height: 5,
+	cakes: 1,
+	map: [
+		["", "", "", ""],
+		["", "", "", "", "cake"],
+		["", "", "", ""],
+		["blank", "blank", "blank", "spikes", "spikes", "spikes", "blank", "blank"],
+		["", "", "blank", "blank", "blank", "blank", "blank"]
+	]
+});
+
 // Level: Tutorial, get cake
 define.map({
 	title: "Tutorial: Get Cake",
